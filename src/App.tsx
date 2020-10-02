@@ -1,19 +1,18 @@
-import React from 'react'
+import React from 'react';
 import { BrowserRouter, Route, Switch, useLocation } from 'react-router-dom';
+import Home from './Home';
 const App = () => {
   return (
     <BrowserRouter>
       <Switch>
-      <Route exact path="/" render={() => <div>
-      Event Locator Client
-    </div>} />
-    <Route path="*">
-            <NoMatch />
-          </Route>
+        <Route exact path="/" component={Home} />
+        <Route path="*">
+          <NoMatch />
+        </Route>
       </Switch>
     </BrowserRouter>
-  )
-}
+  );
+};
 
 const NoMatch = () => {
   let location = useLocation();
@@ -25,7 +24,6 @@ const NoMatch = () => {
       </h3>
     </div>
   );
-}
+};
 
-export default App
-
+export default App;
