@@ -1,4 +1,18 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Event Locator - Client
+
+## Prettier
+
+In the project directory, you can run:
+
+### `npx prettier@2.0.2 . --write`
+
+Prettify your files.<br/>
+
+`.prettierrc`<br/>
+Write your rules here.<br/>
+
+`.prettierignore`<br/>
+Add your ignored files or folder path here.<br/>
 
 ## Available Scripts
 
