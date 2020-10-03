@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 const Home = () => {
   const [position, setPosition] = useState<{ latitude: number; longitude: number; accuracy: number }>();
@@ -40,19 +40,20 @@ const Home = () => {
     }
   }, []);
 
-  useEffect(() => {
-    getLocation();
-  }, [getLocation]);
-
   return (
     <div>
       <h1>Event Locator Client</h1>
-      {position && position.latitude && position.longitude && position.accuracy && (
+      {position ? (
         <div>
           <h2>Details</h2>
           <h3>Latitude: {position.latitude}</h3>
           <h3>Longitude: {position.longitude}</h3>
           <h3>Accuracy: {position.accuracy}</h3>
+        </div>
+      ) : (
+        <div>
+          <p>For nearby feature, you have to give permission for your location.</p>
+          <button onClick={getLocation}>Allow</button>
         </div>
       )}
     </div>
