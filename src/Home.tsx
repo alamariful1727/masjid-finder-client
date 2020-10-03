@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import GoogleMapReact from 'google-map-react';
 
 const Home = () => {
   const [position, setPosition] = useState<{ latitude: number; longitude: number; accuracy: number }>();
+
+  // google-map-react states
+  const [zoom] = useState(10);
 
   const getPositions = (position: Position) => {
     setPosition({
@@ -56,6 +60,24 @@ const Home = () => {
           <button onClick={getLocation}>Allow</button>
         </div>
       )}
+      <div style={{ height: '70vh', width: '100%' }}>
+        {!process.env.REACT_APP_GOOGLE_KEY ? (
+          <h1>Please, provide REACT_APP_GOOGLE_KEY in .env.local</h1>
+        ) : (
+          position && (
+            <GoogleMapReact
+              bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_KEY }}
+              defaultCenter={{
+                lat: position.latitude,
+                lng: position.longitude,
+              }}
+              defaultZoom={zoom}
+            >
+              {/* markers */}
+            </GoogleMapReact>
+          )
+        )}
+      </div>
     </div>
   );
 };
