@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import GoogleMapReact from 'google-map-react';
+import { MAP_KEY } from './config';
 
 const Home = () => {
   const [position, setPosition] = useState<{ latitude: number; longitude: number; accuracy: number }>();
 
   // google-map-react states
-  const [zoom] = useState(10);
+  const [zoom] = useState(13);
 
   const getPositions = (position: Position) => {
+    console.log(position);
     setPosition({
       latitude: position.coords.latitude,
       longitude: position.coords.longitude,
@@ -44,39 +46,32 @@ const Home = () => {
     }
   }, []);
 
+  useEffect(() => {
+    getLocation();
+  }, [getLocation]);
   return (
     <div>
       <h1>Event Locator Client</h1>
-      {position ? (
+      <p>For nearby feature, you have to give permission for your location.</p>
+      {position && (
         <div>
-          <h2>Details</h2>
-          <h3>Latitude: {position.latitude}</h3>
-          <h3>Longitude: {position.longitude}</h3>
-          <h3>Accuracy: {position.accuracy}</h3>
-        </div>
-      ) : (
-        <div>
-          <p>For nearby feature, you have to give permission for your location.</p>
-          <button onClick={getLocation}>Allow</button>
+          <h2>Your location</h2>
+          <p>Latitude: {position.latitude}</p>
+          <p>Longitude: {position.longitude}</p>
+          <p>Accuracy: {position.accuracy}</p>
         </div>
       )}
       <div style={{ height: '70vh', width: '100%' }}>
-        {!process.env.REACT_APP_GOOGLE_KEY ? (
-          <h1>Please, provide REACT_APP_GOOGLE_KEY in .env.local</h1>
-        ) : (
-          position && (
-            <GoogleMapReact
-              bootstrapURLKeys={{ key: process.env.REACT_APP_GOOGLE_KEY }}
-              defaultCenter={{
-                lat: position.latitude,
-                lng: position.longitude,
-              }}
-              defaultZoom={zoom}
-            >
-              {/* markers */}
-            </GoogleMapReact>
-          )
-        )}
+        <GoogleMapReact
+          bootstrapURLKeys={{ key: MAP_KEY }}
+          defaultCenter={{
+            lat: position ? position.latitude : 23.765057,
+            lng: position ? position.longitude : 90.388661,
+          }}
+          defaultZoom={zoom}
+        >
+          {/* markers */}
+        </GoogleMapReact>
       </div>
     </div>
   );
