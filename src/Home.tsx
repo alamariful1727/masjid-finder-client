@@ -94,7 +94,7 @@ const Home = () => {
         <div className="my-5">
           <p>For nearby feature, you have to give permission for your location.</p>
           <button
-            className="bg-gray-400 px-2 py-1 my-2 rounded text-white font-semibold hover:bg-gray-500 transition ease-in-out duration-300 focus:outline-none"
+            className="bg-gray-800 px-2 py-1 my-2 rounded text-yellow-500 font-semibold hover:bg-gray-900 transition ease-in-out duration-300 focus:outline-none"
             onClick={getLocation}
           >
             Find Me
@@ -118,7 +118,6 @@ const Home = () => {
               icon={{
                 url: '/location.svg',
                 origin: new window.google.maps.Point(0, 0),
-                anchor: new window.google.maps.Point(25, 25),
                 scaledSize: new window.google.maps.Size(50, 50),
               }}
             />
