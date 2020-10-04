@@ -1,11 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import GoogleMapReact from 'google-map-react';
+import { GoogleMap, useLoadScript } from '@react-google-maps/api';
 import { MAP_KEY } from './config';
+
+const mapContainerStyle = {
+  height: '100%',
+  width: '100%',
+};
+const options = {
+  // disableDefaultUI: true,
+  // zoomControl: true,
+};
+const center = {
+  lat: 23.765057,
+  lng: 90.388661,
+};
 
 const Home = () => {
   const [position, setPosition] = useState<{ latitude: number; longitude: number; accuracy: number }>();
 
-  // google-map-react states
+  // @react-google-maps/api states
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: MAP_KEY,
+  });
   const [zoom] = useState(13);
 
   const getPositions = (position: Position) => {
@@ -49,6 +65,10 @@ const Home = () => {
   useEffect(() => {
     getLocation();
   }, [getLocation]);
+
+  if (loadError) return <p>{loadError}</p>;
+  if (!isLoaded) return <p>Loading...</p>;
+
   return (
     <div>
       <h1>Event Locator Client</h1>
@@ -61,17 +81,8 @@ const Home = () => {
           <p>Accuracy: {position.accuracy}</p>
         </div>
       )}
-      <div style={{ height: '70vh', width: '100%' }}>
-        <GoogleMapReact
-          bootstrapURLKeys={{ key: MAP_KEY }}
-          defaultCenter={{
-            lat: position ? position.latitude : 23.765057,
-            lng: position ? position.longitude : 90.388661,
-          }}
-          defaultZoom={zoom}
-        >
-          {/* markers */}
-        </GoogleMapReact>
+      <div style={{ height: '70vh' }}>
+        <GoogleMap mapContainerStyle={mapContainerStyle} zoom={zoom} center={center} options={options}></GoogleMap>
       </div>
     </div>
   );
