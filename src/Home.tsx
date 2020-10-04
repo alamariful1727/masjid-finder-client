@@ -82,14 +82,24 @@ const Home = () => {
   return (
     <div className="antialiased h-screen container mx-auto px-3 py-4 md:flex md:space-x-3">
       <div className="md:w-64">
-        <h1 className="font-semibold text-2xl">Event Locator Client</h1>
-        <p>For nearby feature, you have to give permission for your location.</p>
-        <button
-          className="bg-gray-400 px-2 py-1 my-2 rounded text-white font-semibold hover:bg-gray-500 transition ease-in-out duration-300 focus:outline-none"
-          onClick={getLocation}
-        >
-          Find Me
-        </button>
+        <h1 className="font-semibold text-2xl">
+          <span role="img" aria-label="Emoji : Kaba Sharif">
+            🕋
+          </span>{' '}
+          Masjid Finder{' '}
+          <span role="img" aria-label="Emoji : Masjid">
+            🕌
+          </span>
+        </h1>
+        <div className="my-5">
+          <p>For nearby feature, you have to give permission for your location.</p>
+          <button
+            className="bg-gray-400 px-2 py-1 my-2 rounded text-white font-semibold hover:bg-gray-500 transition ease-in-out duration-300 focus:outline-none"
+            onClick={getLocation}
+          >
+            Find Me
+          </button>
+        </div>
         {currentPosition && currentPosition.show && (
           <div className="my-5">
             <h2 className="font-semibold">Your location</h2>
@@ -108,8 +118,8 @@ const Home = () => {
               icon={{
                 url: '/location.svg',
                 origin: new window.google.maps.Point(0, 0),
-                anchor: new window.google.maps.Point(15, 15),
-                scaledSize: new window.google.maps.Size(30, 30),
+                anchor: new window.google.maps.Point(25, 25),
+                scaledSize: new window.google.maps.Size(50, 50),
               }}
             />
           )}
