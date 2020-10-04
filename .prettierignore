@@ -1,3 +1,4 @@
 /src/serviceWorker.ts
 /public/index.html
 tsconfig.json
+/src/styles/index.css
