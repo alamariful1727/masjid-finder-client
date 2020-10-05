@@ -111,12 +111,13 @@ const Home = () => {
       </div>
       <div className="h-full md:flex-1">
         <GoogleMap mapContainerClassName="h-full" zoom={zoom} center={center} onLoad={onMapLoad}>
+          {/* ? show your current position */}
           {currentPosition && currentPosition.show && (
             <Marker
               key={currentPosition.accuracy}
               position={{ lat: currentPosition.latitude, lng: currentPosition.longitude }}
               icon={{
-                url: '/location.svg',
+                url: '/user-location.svg',
                 origin: new window.google.maps.Point(0, 0),
                 scaledSize: new window.google.maps.Size(50, 50),
               }}
