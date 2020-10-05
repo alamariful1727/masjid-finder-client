@@ -1,0 +1,2 @@
+export const SET_NEW_MASJID_DATA = 'SET_NEW_MASJID_DATA';
+export const MASJID_ERROR = 'MASJID_ERROR';

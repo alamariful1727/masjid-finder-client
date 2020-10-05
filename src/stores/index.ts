@@ -1,12 +1,15 @@
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import { IUserReducer, userReducer } from './user/Reducer';
 import thunk from 'redux-thunk';
+import { IMasjidReducer, masjidReducer } from './masjid/Reducer';
 
 export interface IReducer {
+  masjidReducer: IMasjidReducer;
   userReducer: IUserReducer;
 }
 
 const rootReducer = combineReducers({
+  masjidReducer,
   userReducer,
 });
 
