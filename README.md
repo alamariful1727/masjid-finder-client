@@ -1,4 +1,4 @@
-# Event Locator - Client
+# Masjid Finder - Client
 
 ## Prettier
 
