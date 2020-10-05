@@ -18,7 +18,7 @@ const InitialState: IUserReducer = {
   loading: false,
 };
 
-const setCurrentLocation = (state: IUserReducer, action: any) => {
+const getCurrentLocation = (state: IUserReducer, action: any) => {
   return {
     ...state,
     position: action.payload,
@@ -29,7 +29,7 @@ const setCurrentLocation = (state: IUserReducer, action: any) => {
 const Reducer = (state = InitialState, action: any) => {
   switch (action.type) {
     case GET_CURRENT_LOCATION:
-      return setCurrentLocation(state, action);
+      return getCurrentLocation(state, action);
     case USER_ERROR:
       return {
         ...state,
