@@ -22,7 +22,7 @@ const setCurrentLocation = (state: IUserReducer, action: any) => {
   return {
     ...state,
     position: action.payload,
-    error: '',
+    error: null,
   };
 };
 
