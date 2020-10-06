@@ -1,10 +1,10 @@
-import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
+import { GoogleMap, InfoWindow, Marker, useLoadScript } from '@react-google-maps/api';
 import React, { useEffect, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { MAP_KEY } from '../../config';
 import { IReducer } from '../../stores';
-import { INewMasjid } from '../../stores/masjid/Reducer';
-import { setNewMasjidDataAction } from './../../stores/masjid/Actions';
+import { IMasjid, INewMasjid } from '../../stores/masjid/Reducer';
+import { setNewMasjidPositionAction } from './../../stores/masjid/Actions';
 
 const center = {
   lat: 23.765057,
@@ -12,12 +12,23 @@ const center = {
 };
 
 interface Props {
-  setNewMasjidDataAction: (data: INewMasjid) => void;
+  setNewMasjidPositionAction: (position: {
+    latitude: INewMasjid['latitude'];
+    longitude: INewMasjid['longitude'];
+  }) => void;
 }
 
-const MapComponent: React.FC<Props> = ({ setNewMasjidDataAction }) => {
+const MapComponent: React.FC<Props> = ({ setNewMasjidPositionAction }) => {
   const currentPosition = useSelector((state: IReducer) => state.userReducer.position);
-  const newMasjid = useSelector((state: IReducer) => state.masjidReducer.new);
+  const { newMasjid, showAddForm, masjids } = useSelector((state: IReducer) => {
+    return {
+      newMasjid: state.masjidReducer.new,
+      showAddForm: state.masjidReducer.showAddForm,
+      masjids: state.masjidReducer.masjids,
+    };
+  });
+
+  const [selectedMasjid, setSelectedMasjid] = useState<IMasjid>();
 
   // @react-google-maps/api states
   const { isLoaded, loadError } = useLoadScript({
@@ -41,9 +52,9 @@ const MapComponent: React.FC<Props> = ({ setNewMasjidDataAction }) => {
 
   const handleOnClick = React.useCallback(
     (e: google.maps.MouseEvent) => {
-      setNewMasjidDataAction({ latitude: e.latLng.lat(), longitude: e.latLng.lng() });
+      showAddForm && setNewMasjidPositionAction({ latitude: e.latLng.lat(), longitude: e.latLng.lng() });
     },
-    [setNewMasjidDataAction],
+    [setNewMasjidPositionAction, showAddForm],
   );
 
   useEffect(() => {
@@ -57,7 +68,7 @@ const MapComponent: React.FC<Props> = ({ setNewMasjidDataAction }) => {
 
   return (
     <GoogleMap mapContainerClassName="h-full" zoom={zoom} center={center} onLoad={onMapLoad} onClick={handleOnClick}>
-      {newMasjid && newMasjid.latitude && newMasjid.longitude && (
+      {showAddForm && newMasjid.latitude > 0 && newMasjid.longitude > 0 && (
         <Marker
           key={Date.now()}
           position={{ lat: newMasjid.latitude, lng: newMasjid.longitude }}
@@ -79,9 +90,44 @@ const MapComponent: React.FC<Props> = ({ setNewMasjidDataAction }) => {
           }}
         />
       )}
+      {masjids.length > 0 &&
+        masjids.map((masjid) => (
+          <Marker
+            key={masjid._id}
+            position={{ lat: masjid.latitude, lng: masjid.longitude }}
+            icon={{
+              url: '/masjid.svg',
+              origin: new window.google.maps.Point(0, 0),
+              scaledSize: new window.google.maps.Size(50, 50),
+            }}
+            onClick={() => {
+              setSelectedMasjid(undefined);
+              setSelectedMasjid(masjid);
+            }}
+          />
+        ))}
+      {selectedMasjid && (
+        <InfoWindow
+          position={{ lat: selectedMasjid.latitude, lng: selectedMasjid.longitude }}
+          onCloseClick={() => {
+            setSelectedMasjid(undefined);
+          }}
+        >
+          <div className="font-medium">
+            <h2 className="text-center text-lg mb-2">
+              <span role="img" aria-label="Emoji : Masjid">
+                🕌
+              </span>{' '}
+              {selectedMasjid.name}
+            </h2>
+            <p className="mb-1">Address : {selectedMasjid.address}</p>
+            <p className="mb-1">Phone : {selectedMasjid.contactNo}</p>
+          </div>
+        </InfoWindow>
+      )}
     </GoogleMap>
   );
 };
-const Map = connect(null, { setNewMasjidDataAction })(MapComponent);
+const Map = connect(null, { setNewMasjidPositionAction })(MapComponent);
 
 export default Map;
