@@ -1,23 +1,22 @@
 import React, { useCallback, useEffect } from 'react';
-import { IMasjid } from '../../stores/masjid/Reducer';
+import { INewMasjid } from '../../stores/masjid/Reducer';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { connect, useSelector } from 'react-redux';
 import { IReducer } from '../../stores';
 import { CancelIcon } from '../../components/icons/Cancel';
-import { toggleAddMasjidFormAction } from './../../stores/masjid/Actions';
-
-interface IData extends Pick<IMasjid, 'name' | 'address' | 'contactNo' | 'latitude' | 'longitude'> {}
+import { toggleAddMasjidFormAction, addNewMasjidAction } from './../../stores/masjid/Actions';
 
 interface Props {
   toggleAddMasjidFormAction: () => void;
+  addNewMasjidAction: (data: INewMasjid) => Promise<any>;
 }
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
     .min(2, 'Should be at least 2 characters long')
-    .max(15, 'Should be less then 15 characters')
+    .max(150, 'Should be less then 150 characters')
     .required('Required'),
   contactNo: Yup.string().max(14, 'Should be less then 14 characters').required('Required'),
   address: Yup.string()
@@ -36,10 +35,10 @@ const validationSchema = Yup.object().shape({
     .required('Required'),
 });
 
-const AddMasjidFormComponent: React.FC<Props> = ({ toggleAddMasjidFormAction }) => {
+const AddMasjidFormComponent: React.FC<Props> = ({ toggleAddMasjidFormAction, addNewMasjidAction }) => {
   const { name, address, contactNo, latitude, longitude } = useSelector((state: IReducer) => state.masjidReducer.new);
 
-  const { register, handleSubmit, errors, setValue } = useForm<IData>({
+  const { register, handleSubmit, errors, setValue } = useForm<INewMasjid>({
     resolver: yupResolver(validationSchema),
     defaultValues: {
       name: name,
@@ -50,8 +49,11 @@ const AddMasjidFormComponent: React.FC<Props> = ({ toggleAddMasjidFormAction }) 
     },
   });
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
+  const onSubmit = handleSubmit(async (data) => {
+    const res = await addNewMasjidAction(data);
+    if (res.status === 201) {
+      toggleAddMasjidFormAction();
+    }
   });
 
   const updatePositions = useCallback(() => {
@@ -167,4 +169,4 @@ const AddMasjidFormComponent: React.FC<Props> = ({ toggleAddMasjidFormAction }) 
   );
 };
 
-export const AddMasjidForm = connect(null, { toggleAddMasjidFormAction })(AddMasjidFormComponent);
+export const AddMasjidForm = connect(null, { toggleAddMasjidFormAction, addNewMasjidAction })(AddMasjidFormComponent);
