@@ -1,9 +1,9 @@
-import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
+import { GoogleMap, InfoWindow, Marker, useLoadScript } from '@react-google-maps/api';
 import React, { useEffect, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { MAP_KEY } from '../../config';
 import { IReducer } from '../../stores';
-import { INewMasjid } from '../../stores/masjid/Reducer';
+import { IMasjid, INewMasjid } from '../../stores/masjid/Reducer';
 import { setNewMasjidPositionAction } from './../../stores/masjid/Actions';
 
 const center = {
@@ -27,6 +27,8 @@ const MapComponent: React.FC<Props> = ({ setNewMasjidPositionAction }) => {
       masjids: state.masjidReducer.masjids,
     };
   });
+
+  const [selectedMasjid, setSelectedMasjid] = useState<IMasjid>();
 
   // @react-google-maps/api states
   const { isLoaded, loadError } = useLoadScript({
@@ -96,10 +98,34 @@ const MapComponent: React.FC<Props> = ({ setNewMasjidPositionAction }) => {
             icon={{
               url: '/masjid.svg',
               origin: new window.google.maps.Point(0, 0),
+              anchor: new window.google.maps.Point(25, 25),
               scaledSize: new window.google.maps.Size(50, 50),
+            }}
+            onClick={() => {
+              setSelectedMasjid(undefined);
+              setSelectedMasjid(masjid);
             }}
           />
         ))}
+      {selectedMasjid && (
+        <InfoWindow
+          position={{ lat: selectedMasjid.latitude, lng: selectedMasjid.longitude }}
+          onCloseClick={() => {
+            setSelectedMasjid(undefined);
+          }}
+        >
+          <div className="font-medium">
+            <h2 className="text-center text-lg mb-2">
+              <span role="img" aria-label="Emoji : Masjid">
+                🕌
+              </span>{' '}
+              {selectedMasjid.name}
+            </h2>
+            <p className="mb-1">Address : {selectedMasjid.address}</p>
+            <p className="mb-1">Phone : {selectedMasjid.contactNo}</p>
+          </div>
+        </InfoWindow>
+      )}
     </GoogleMap>
   );
 };
