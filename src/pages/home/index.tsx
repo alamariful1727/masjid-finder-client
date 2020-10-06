@@ -1,19 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, connect } from 'react-redux';
 import { IReducer } from '../../stores';
 import { getLocationAction } from '../../stores/user/Actions';
-import { toggleAddMasjidFormAction } from '../../stores/masjid/Actions';
+import { toggleAddMasjidFormAction, getAllMasjidsAction } from '../../stores/masjid/Actions';
 import { AddMasjidForm } from './AddMasjidForm';
 import Map from './Map';
 
 interface Props {
   getLocationAction: () => void;
   toggleAddMasjidFormAction: () => void;
+  getAllMasjidsAction: () => Promise<any>;
 }
 
-const HomeComponent: React.FC<Props> = ({ getLocationAction, toggleAddMasjidFormAction }) => {
+const HomeComponent: React.FC<Props> = ({ getLocationAction, toggleAddMasjidFormAction, getAllMasjidsAction }) => {
   const currentPosition = useSelector((state: IReducer) => state.userReducer.position);
   const showAddForm = useSelector((state: IReducer) => state.masjidReducer.showAddForm);
+
+  useEffect(() => {
+    getAllMasjidsAction();
+  }, [getAllMasjidsAction]);
 
   return (
     <div className="bg-gray-200">
@@ -67,6 +72,6 @@ const HomeComponent: React.FC<Props> = ({ getLocationAction, toggleAddMasjidForm
   );
 };
 
-const Home = connect(null, { getLocationAction, toggleAddMasjidFormAction })(HomeComponent);
+const Home = connect(null, { getLocationAction, toggleAddMasjidFormAction, getAllMasjidsAction })(HomeComponent);
 
 export default Home;

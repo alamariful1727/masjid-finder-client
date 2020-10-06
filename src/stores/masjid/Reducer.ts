@@ -1,4 +1,4 @@
-import { MASJID_ERROR, SET_NEW_MASJID_POSITION, TOGGLE_ADD_MASJID_FORM } from './Types';
+import { GET_All_MASJIDS, MASJID_ERROR, SET_NEW_MASJID_POSITION, TOGGLE_ADD_MASJID_FORM } from './Types';
 
 export interface IMasjid {
   _id: string;
@@ -22,6 +22,7 @@ export interface INewMasjid {
 export interface IMasjidReducer {
   showAddForm: boolean;
   new: INewMasjid;
+  masjids: IMasjid[];
   error: string | object | null;
   loading: boolean;
 }
@@ -35,6 +36,7 @@ const InitialState: IMasjidReducer = {
     latitude: 0,
     longitude: 0,
   },
+  masjids: [],
   error: null,
   loading: false,
 };
@@ -55,6 +57,12 @@ const Reducer = (state = InitialState, action: any) => {
       return {
         ...state,
         showAddForm: action.payload,
+        loading: false,
+      };
+    case GET_All_MASJIDS:
+      return {
+        ...state,
+        masjids: action.payload,
         loading: false,
       };
     case MASJID_ERROR:

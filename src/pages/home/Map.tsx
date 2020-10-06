@@ -20,10 +20,11 @@ interface Props {
 
 const MapComponent: React.FC<Props> = ({ setNewMasjidPositionAction }) => {
   const currentPosition = useSelector((state: IReducer) => state.userReducer.position);
-  const { newMasjid, showAddForm } = useSelector((state: IReducer) => {
+  const { newMasjid, showAddForm, masjids } = useSelector((state: IReducer) => {
     return {
       newMasjid: state.masjidReducer.new,
       showAddForm: state.masjidReducer.showAddForm,
+      masjids: state.masjidReducer.masjids,
     };
   });
 
@@ -87,6 +88,18 @@ const MapComponent: React.FC<Props> = ({ setNewMasjidPositionAction }) => {
           }}
         />
       )}
+      {masjids.length > 0 &&
+        masjids.map((masjid) => (
+          <Marker
+            key={masjid._id}
+            position={{ lat: masjid.latitude, lng: masjid.longitude }}
+            icon={{
+              url: '/masjid.svg',
+              origin: new window.google.maps.Point(0, 0),
+              scaledSize: new window.google.maps.Size(50, 50),
+            }}
+          />
+        ))}
     </GoogleMap>
   );
 };
