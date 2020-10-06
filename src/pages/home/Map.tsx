@@ -4,7 +4,7 @@ import { connect, useSelector } from 'react-redux';
 import { MAP_KEY } from '../../config';
 import { IReducer } from '../../stores';
 import { INewMasjid } from '../../stores/masjid/Reducer';
-import { setNewMasjidDataAction } from './../../stores/masjid/Actions';
+import { setNewMasjidPositionAction } from './../../stores/masjid/Actions';
 
 const center = {
   lat: 23.765057,
@@ -12,12 +12,20 @@ const center = {
 };
 
 interface Props {
-  setNewMasjidDataAction: (data: INewMasjid) => void;
+  setNewMasjidPositionAction: (position: {
+    latitude: INewMasjid['latitude'];
+    longitude: INewMasjid['longitude'];
+  }) => void;
 }
 
-const MapComponent: React.FC<Props> = ({ setNewMasjidDataAction }) => {
+const MapComponent: React.FC<Props> = ({ setNewMasjidPositionAction }) => {
   const currentPosition = useSelector((state: IReducer) => state.userReducer.position);
-  const newMasjid = useSelector((state: IReducer) => state.masjidReducer.new);
+  const { newMasjid, showAddForm } = useSelector((state: IReducer) => {
+    return {
+      newMasjid: state.masjidReducer.new,
+      showAddForm: state.masjidReducer.showAddForm,
+    };
+  });
 
   // @react-google-maps/api states
   const { isLoaded, loadError } = useLoadScript({
@@ -41,9 +49,9 @@ const MapComponent: React.FC<Props> = ({ setNewMasjidDataAction }) => {
 
   const handleOnClick = React.useCallback(
     (e: google.maps.MouseEvent) => {
-      setNewMasjidDataAction({ latitude: e.latLng.lat(), longitude: e.latLng.lng() });
+      showAddForm && setNewMasjidPositionAction({ latitude: e.latLng.lat(), longitude: e.latLng.lng() });
     },
-    [setNewMasjidDataAction],
+    [setNewMasjidPositionAction, showAddForm],
   );
 
   useEffect(() => {
@@ -57,7 +65,7 @@ const MapComponent: React.FC<Props> = ({ setNewMasjidDataAction }) => {
 
   return (
     <GoogleMap mapContainerClassName="h-full" zoom={zoom} center={center} onLoad={onMapLoad} onClick={handleOnClick}>
-      {newMasjid && newMasjid.latitude && newMasjid.longitude && (
+      {showAddForm && newMasjid.latitude > 0 && newMasjid.longitude > 0 && (
         <Marker
           key={Date.now()}
           position={{ lat: newMasjid.latitude, lng: newMasjid.longitude }}
@@ -82,6 +90,6 @@ const MapComponent: React.FC<Props> = ({ setNewMasjidDataAction }) => {
     </GoogleMap>
   );
 };
-const Map = connect(null, { setNewMasjidDataAction })(MapComponent);
+const Map = connect(null, { setNewMasjidPositionAction })(MapComponent);
 
 export default Map;
