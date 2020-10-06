@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect } from 'react';
 import { IMasjid } from '../../stores/masjid/Reducer';
 import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
 import { connect, useSelector } from 'react-redux';
 import { IReducer } from '../../stores';
-import { CancelIcon } from '../../icons/Cancel';
+import { CancelIcon } from '../../components/icons/Cancel';
 import { toggleAddMasjidFormAction } from './../../stores/masjid/Actions';
 
 interface IData extends Pick<IMasjid, 'name' | 'address' | 'contactNo' | 'latitude' | 'longitude'> {}
@@ -12,11 +14,33 @@ interface Props {
   toggleAddMasjidFormAction: () => void;
 }
 
+const validationSchema = Yup.object().shape({
+  name: Yup.string()
+    .min(2, 'Should be at least 2 characters long')
+    .max(15, 'Should be less then 15 characters')
+    .required('Required'),
+  contactNo: Yup.string().max(14, 'Should be less then 14 characters').required('Required'),
+  address: Yup.string()
+    .min(2, 'Should be at least 2 characters long')
+    .max(500, 'Should be less then 500 characters')
+    .required('Required'),
+  latitude: Yup.number()
+    .notOneOf([0], "Can't be '0'")
+    .min(-90, 'Should be less then -90 characters')
+    .max(90, 'Should be less then 90 characters')
+    .required('Required'),
+  longitude: Yup.number()
+    .notOneOf([0], "Can't be '0'")
+    .min(-180, 'Should be less then -180 characters')
+    .max(180, 'Should be less then 180 characters')
+    .required('Required'),
+});
+
 const AddMasjidFormComponent: React.FC<Props> = ({ toggleAddMasjidFormAction }) => {
   const { name, address, contactNo, latitude, longitude } = useSelector((state: IReducer) => state.masjidReducer.new);
 
   const { register, handleSubmit, errors, setValue } = useForm<IData>({
-    reValidateMode: 'onChange',
+    resolver: yupResolver(validationSchema),
     defaultValues: {
       name: name,
       address: address,
@@ -31,8 +55,10 @@ const AddMasjidFormComponent: React.FC<Props> = ({ toggleAddMasjidFormAction }) 
   });
 
   const updatePositions = useCallback(() => {
-    setValue('latitude', latitude);
-    setValue('longitude', longitude);
+    if (latitude !== 0 && longitude !== 0) {
+      setValue('latitude', latitude, { shouldValidate: true });
+      setValue('longitude', longitude, { shouldValidate: true });
+    }
   }, [setValue, latitude, longitude]);
 
   useEffect(() => {
@@ -58,8 +84,9 @@ const AddMasjidFormComponent: React.FC<Props> = ({ toggleAddMasjidFormAction }) 
             name="name"
             type="text"
             placeholder="Name"
-            ref={register({ required: true, minLength: 2, maxLength: 150 })}
+            ref={register}
           />
+          {errors.name && <p className="text-red-500 text-xs italic font-medium mt-1">{errors.name.message}</p>}
         </div>
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="address">
@@ -71,8 +98,9 @@ const AddMasjidFormComponent: React.FC<Props> = ({ toggleAddMasjidFormAction }) 
             name="address"
             type="text"
             placeholder="Address"
-            ref={register({ required: true, minLength: 2, maxLength: 500 })}
+            ref={register}
           />
+          {errors.address && <p className="text-red-500 text-xs italic font-medium mt-1">{errors.address.message}</p>}
         </div>
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="contactNo">
@@ -84,8 +112,11 @@ const AddMasjidFormComponent: React.FC<Props> = ({ toggleAddMasjidFormAction }) 
             name="contactNo"
             type="text"
             placeholder="Contact number"
-            ref={register({ required: true, maxLength: 14 })}
+            ref={register}
           />
+          {errors.contactNo && (
+            <p className="text-red-500 text-xs italic font-medium mt-1">{errors.contactNo.message}</p>
+          )}
         </div>
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="latitude">
@@ -98,8 +129,13 @@ const AddMasjidFormComponent: React.FC<Props> = ({ toggleAddMasjidFormAction }) 
             type="number"
             readOnly
             placeholder="Latitude"
-            ref={register({ required: true, min: -90, max: 90 })}
+            ref={register}
           />
+          {errors.latitude ? (
+            <p className="text-red-500 text-xs italic font-medium mt-1">{errors.latitude.message}</p>
+          ) : (
+            <p className="text-gray-500 text-xs italic font-medium mt-1">Click on Map to set a value</p>
+          )}
         </div>
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="longitude">
@@ -112,23 +148,20 @@ const AddMasjidFormComponent: React.FC<Props> = ({ toggleAddMasjidFormAction }) 
             type="number"
             readOnly
             placeholder="Longitude"
-            ref={register({ required: true, min: -180, max: 180 })}
+            ref={register}
           />
+          {errors.longitude ? (
+            <p className="text-red-500 text-xs italic font-medium mt-1">{errors.longitude.message}</p>
+          ) : (
+            <p className="text-gray-500 text-xs italic font-medium mt-1">Click on Map to set a value</p>
+          )}
         </div>
-        <div className="flex items-center justify-between">
-          <button
-            className="bg-gray-800 px-6 py-2 my-2 rounded text-yellow-500 font-semibold hover:bg-gray-900 transition ease-in-out duration-300 focus:outline-none"
-            type="submit"
-          >
-            ADD
-          </button>
-          <button
-            className="bg-red-500 px-6 py-2 my-2 rounded text-white font-semibold hover:bg-red-700 transition ease-in-out duration-300 focus:outline-none"
-            type="reset"
-          >
-            RESET
-          </button>
-        </div>
+        <button
+          className="bg-gray-800 px-6 py-2 my-2 rounded text-yellow-500 font-semibold hover:bg-gray-900 transition ease-in-out duration-300 focus:outline-none"
+          type="submit"
+        >
+          ADD
+        </button>
       </form>
     </div>
   );

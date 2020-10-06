@@ -49,7 +49,7 @@ const HomeComponent: React.FC<Props> = ({ getLocationAction, toggleAddMasjidForm
             <AddMasjidForm />
           ) : (
             <div className="my-5">
-              <h2 className="font-semibold">Do you want to add Masjid information ?</h2>
+              <h2 className="font-semibold">Do you want to add a Masjid information ?</h2>
               <button
                 className="bg-gray-800 px-6 py-2 my-2 rounded text-yellow-500 font-semibold hover:bg-gray-900 transition ease-in-out duration-300 focus:outline-none"
                 onClick={toggleAddMasjidFormAction}
