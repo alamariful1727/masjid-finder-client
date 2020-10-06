@@ -26,10 +26,6 @@ export interface IMasjidReducer {
 }
 
 const InitialState: IMasjidReducer = {
-  new: {
-    latitude: 23.77369751309301,
-    longitude: 90.3840690581665,
-  },
   error: null,
   loading: false,
 };
