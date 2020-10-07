@@ -21,52 +21,41 @@ const HomeComponent: React.FC<Props> = ({ getLocationAction, toggleAddMasjidForm
   }, [getAllMasjidsAction]);
 
   return (
-    <div className="bg-gray-200">
-      <div className="antialiased h-screen container mx-auto px-3 py-4 md:flex md:space-x-3">
-        <div className="md:w-64 lg:w-1/3">
-          <h1 className="font-semibold text-2xl">
-            <span role="img" aria-label="Emoji : Kaba Sharif">
-              🕋
-            </span>{' '}
-            Masjid Finder{' '}
-            <span role="img" aria-label="Emoji : Masjid">
-              🕌
-            </span>
-          </h1>
-          <div className="my-5">
-            <p className="font-semibold">For nearby feature, you have to give permission for your location.</p>
+    <div className="container mx-auto px-3 py-4 flex flex-col md:flex-row md:space-x-3">
+      <div className="md:w-64 lg:w-1/3">
+        <div className="mb-5">
+          <p className="font-semibold">For nearby feature, you have to give permission for your location.</p>
+          <button
+            className="bg-gray-800 px-6 py-2 my-2 rounded text-yellow-500 font-semibold hover:bg-gray-900 transition ease-in-out duration-300 focus:outline-none"
+            onClick={getLocationAction}
+          >
+            Find Me
+          </button>
+        </div>
+        {currentPosition && currentPosition.show && (
+          <div className="mb-5">
+            <h2 className="font-bold">Your location</h2>
+            <p>Latitude: {currentPosition.latitude}</p>
+            <p>Longitude: {currentPosition.longitude}</p>
+            <p>Accuracy: {currentPosition.accuracy}</p>
+          </div>
+        )}
+        {showAddForm ? (
+          <AddMasjidForm />
+        ) : (
+          <div className="mb-5">
+            <h2 className="font-semibold">Do you want to add a Masjid information ?</h2>
             <button
               className="bg-gray-800 px-6 py-2 my-2 rounded text-yellow-500 font-semibold hover:bg-gray-900 transition ease-in-out duration-300 focus:outline-none"
-              onClick={getLocationAction}
+              onClick={toggleAddMasjidFormAction}
             >
-              Find Me
+              Add Masjid
             </button>
           </div>
-          {currentPosition && currentPosition.show && (
-            <div className="my-5">
-              <h2 className="font-bold">Your location</h2>
-              <p>Latitude: {currentPosition.latitude}</p>
-              <p>Longitude: {currentPosition.longitude}</p>
-              <p>Accuracy: {currentPosition.accuracy}</p>
-            </div>
-          )}
-          {showAddForm ? (
-            <AddMasjidForm />
-          ) : (
-            <div className="my-5">
-              <h2 className="font-semibold">Do you want to add a Masjid information ?</h2>
-              <button
-                className="bg-gray-800 px-6 py-2 my-2 rounded text-yellow-500 font-semibold hover:bg-gray-900 transition ease-in-out duration-300 focus:outline-none"
-                onClick={toggleAddMasjidFormAction}
-              >
-                Add Masjid
-              </button>
-            </div>
-          )}
-        </div>
-        <div className="h-full md:flex-1">
-          <Map />
-        </div>
+        )}
+      </div>
+      <div className="h-screen flex-1">
+        <Map />
       </div>
     </div>
   );

@@ -68,7 +68,7 @@ const AddMasjidFormComponent: React.FC<Props> = ({ toggleAddMasjidFormAction, ad
   }, [updatePositions]);
 
   return (
-    <div className="bg-white shadow-lg rounded px-8 pt-6 pb-8 my-5">
+    <div className="bg-white shadow-lg rounded px-8 pt-6 pb-8 mb-5">
       <div className="flex justify-between">
         <h2 className="font-bold mb-2">Add Masjid's Location</h2>
         <div onClick={toggleAddMasjidFormAction}>

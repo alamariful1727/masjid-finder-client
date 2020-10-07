@@ -1,12 +1,17 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch, useLocation } from 'react-router-dom';
+import Layout from './Layout';
 import Home from './pages/home';
+
+const PublicRoute = (props: { component: any; path: string; exact: boolean }) => {
+  return <Route path={props.path} exact={props.exact} render={() => <Layout Component={props.component} />} />;
+};
 
 const App = () => {
   return (
     <BrowserRouter>
       <Switch>
-        <Route exact path="/" component={Home} />
+        <PublicRoute exact={true} path="/" component={Home} />
         <Route path="*">
           <NoMatch />
         </Route>
