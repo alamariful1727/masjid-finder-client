@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fullhuman/postcss-purgecss": "^3.0.0",
     "@hookform/resolvers": "^1.0.0",
     "@react-google-maps/api": "^1.10.1",
     "@testing-library/jest-dom": "^4.2.4",
@@ -33,10 +34,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "yarn tw-build && react-scripts build",
-    "tw-build": "npx tailwindcss build src/styles/tailwind.css -o src/styles/index.css",
+    "build": "yarn postcss-build && react-scripts build",
     "postcss-build": "postcss src/styles/tailwind.css -o src/styles/index.css",
     "postcss-watch": "postcss src/styles/tailwind.css -o src/styles/index.css -w",
+    "tw-build": "npx tailwindcss build src/styles/tailwind.css -o src/styles/index.css",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
